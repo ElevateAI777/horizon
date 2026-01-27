@@ -58,7 +58,7 @@
               "type": "text",
               "name": "Heading",
               "settings": {
-                "text": "<h2>Join our email list</h2>",
+                "text": "<h2>Абонирайте се за бюлетина</h2>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -84,7 +84,7 @@
               "type": "text",
               "name": "Text",
               "settings": {
-                "text": "<p>Get exclusive deals and early access to new products.</p>",
+                "text": "<p>Получавайте актуална информация за метаболитното здраве</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",

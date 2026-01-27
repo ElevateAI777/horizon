@@ -1,0 +1,364 @@
+{% liquid
+  assign form_id = 'contact-form-' | append: section.id
+%}
+
+<div class="contact-form-wrapper section-wrapper">
+  <div class="contact-form-section spacing-style section color-{{ section.settings.color_scheme }} {{ section.settings.section_width }}" style="{% render 'spacing-style', settings: section.settings %}">
+    <div class="contact-form-container">
+      <div class="contact-form-content">
+        {% if section.settings.heading != blank %}
+          <h2 class="contact-form__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="contact-form__description rte">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+
+        {% form 'contact', id: form_id, class: 'contact-form' %}
+          {% if form.posted_successfully? %}
+            <div class="form-message form-message--success">
+              <p>{{ section.settings.success_message | default: 'Благодарим Ви! Вашето съобщение беше изпратено успешно.' }}</p>
+            </div>
+          {% endif %}
+
+          {% if form.errors %}
+            <div class="form-message form-message--error">
+              <p>{{ form.errors | default_errors }}</p>
+            </div>
+          {% endif %}
+
+          <div class="contact-form__field">
+            <label for="{{ form_id }}-name">{{ section.settings.name_label | default: 'Име и фамилия' }} <span class="required">*</span></label>
+            <input
+              type="text"
+              id="{{ form_id }}-name"
+              name="contact[name]"
+              value="{% if form.name %}{{ form.name }}{% endif %}"
+              required
+            >
+          </div>
+
+          <div class="contact-form__field">
+            <label for="{{ form_id }}-email">{{ section.settings.email_label | default: 'Имейл адрес' }} <span class="required">*</span></label>
+            <input
+              type="email"
+              id="{{ form_id }}-email"
+              name="contact[email]"
+              value="{% if form.email %}{{ form.email }}{% endif %}"
+              required
+            >
+          </div>
+
+          <div class="contact-form__field">
+            <label for="{{ form_id }}-phone">{{ section.settings.phone_label | default: 'Телефон' }}</label>
+            <input
+              type="tel"
+              id="{{ form_id }}-phone"
+              name="contact[phone]"
+              value="{% if form.phone %}{{ form.phone }}{% endif %}"
+            >
+          </div>
+
+          <div class="contact-form__field">
+            <label for="{{ form_id }}-subject">{{ section.settings.subject_label | default: 'Тема на запитването' }} <span class="required">*</span></label>
+            <select id="{{ form_id }}-subject" name="contact[subject]" required>
+              <option value="">Изберете тема</option>
+              {% for option in section.settings.subject_options %}
+                <option value="{{ option }}">{{ option }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="contact-form__field">
+            <label for="{{ form_id }}-message">{{ section.settings.message_label | default: 'Съобщение' }} <span class="required">*</span></label>
+            <textarea
+              id="{{ form_id }}-message"
+              name="contact[body]"
+              rows="6"
+              required
+            >{% if form.body %}{{ form.body }}{% endif %}</textarea>
+          </div>
+
+          <div class="contact-form__submit">
+            <button type="submit" class="button">
+              {{ section.settings.submit_label | default: 'Изпрати' }}
+            </button>
+          </div>
+        {% endform %}
+      </div>
+
+      {% if section.settings.show_contact_info %}
+        <div class="contact-info">
+          <h3>{{ section.settings.contact_info_heading | default: 'Информация за контакт' }}</h3>
+
+          <div class="contact-info__content rte">
+            {{ section.settings.contact_info_content }}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .contact-form-section {
+    padding-block-start: var(--padding-block-start);
+    padding-block-end: var(--padding-block-end);
+  }
+
+  .contact-form-container {
+    display: grid;
+    gap: 3rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media screen and (min-width: 990px) {
+    .contact-form-container {
+      grid-template-columns: 1.5fr 1fr;
+    }
+  }
+
+  .contact-form__heading {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-block-end: 1rem;
+    color: var(--color-foreground-heading);
+  }
+
+  .contact-form__description {
+    margin-block-end: 2rem;
+    color: var(--color-foreground);
+    line-height: 1.6;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contact-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .contact-form__field label {
+    font-weight: 500;
+    color: var(--color-foreground-heading);
+  }
+
+  .contact-form__field .required {
+    color: #d32f2f;
+  }
+
+  .contact-form__field input,
+  .contact-form__field select,
+  .contact-form__field textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgb(var(--color-border-rgb));
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    transition: border-color 0.2s ease;
+  }
+
+  .contact-form__field input:focus,
+  .contact-form__field select:focus,
+  .contact-form__field textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .form-message {
+    padding: 1rem 1.25rem;
+    border-radius: 4px;
+    margin-block-end: 1rem;
+  }
+
+  .form-message--success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+  }
+
+  .form-message--error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+  }
+
+  .contact-form__submit {
+    padding-block-start: 0.5rem;
+  }
+
+  .contact-info h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-block-end: 1rem;
+    color: var(--color-foreground-heading);
+  }
+
+  .contact-info__content {
+    line-height: 1.6;
+    color: var(--color-foreground);
+  }
+
+  .contact-info__content p {
+    margin-block: 0.75rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact Form",
+  "tag": "section",
+  "class": "section-contact-form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Свържете се с нас"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Готови сме да отговорим на вашите въпроси</p>"
+    },
+    {
+      "type": "header",
+      "content": "Form Labels"
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Name field label",
+      "default": "Име и фамилия"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email field label",
+      "default": "Имейл адрес"
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "label": "Phone field label",
+      "default": "Телефон"
+    },
+    {
+      "type": "text",
+      "id": "subject_label",
+      "label": "Subject field label",
+      "default": "Тема на запитването"
+    },
+    {
+      "type": "textarea",
+      "id": "subject_options",
+      "label": "Subject options (one per line)",
+      "default": "Общо запитване\nВъпрос за продукта\nВъпрос за поръчка\nТехническа поддръжка\nПартньорство"
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Message field label",
+      "default": "Съобщение"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button label",
+      "default": "Изпрати"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Благодарим Ви! Вашето съобщение беше изпратено успешно."
+    },
+    {
+      "type": "header",
+      "content": "Contact Information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_contact_info",
+      "label": "Show contact information",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "contact_info_heading",
+      "label": "Contact info heading",
+      "default": "Информация за контакт"
+    },
+    {
+      "type": "richtext",
+      "id": "contact_info_content",
+      "label": "Contact info content"
+    },
+    {
+      "type": "header",
+      "content": "Section settings"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Page width"
+        },
+        {
+          "value": "full-width",
+          "label": "Full width"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Form",
+      "settings": {
+        "heading": "Свържете се с нас",
+        "description": "<p>Готови сме да отговорим на вашите въпроси</p>"
+      }
+    }
+  ]
+}
+{% endschema %}

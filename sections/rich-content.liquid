@@ -1,0 +1,282 @@
+{% liquid
+  assign content_width = section.settings.content_width | default: 'narrow'
+  assign text_align = section.settings.text_alignment | default: 'left'
+%}
+
+<div class="rich-content-wrapper section-wrapper">
+  <div class="rich-content spacing-style section color-{{ section.settings.color_scheme }} {{ section.settings.section_width }}" style="{% render 'spacing-style', settings: section.settings %}">
+    <div class="rich-content__container rich-content__container--{{ content_width }}">
+      {% if section.settings.heading != blank %}
+        <h2 class="rich-content__heading" style="text-align: {{ text_align }}">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.subheading != blank %}
+        <div class="rich-content__subheading rte" style="text-align: {{ text_align }}">
+          {{ section.settings.subheading }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.content != blank %}
+        <div class="rich-content__content rte" style="text-align: {{ text_align }}">
+          {{ section.settings.content }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+        <div class="rich-content__button" style="text-align: {{ text_align }}">
+          <a href="{{ section.settings.button_link }}" class="button {{ section.settings.button_style }}">
+            {{ section.settings.button_label }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .rich-content {
+    padding-block-start: var(--padding-block-start);
+    padding-block-end: var(--padding-block-end);
+  }
+
+  .rich-content__container {
+    margin-inline: auto;
+  }
+
+  .rich-content__container--narrow {
+    max-width: 45rem;
+  }
+
+  .rich-content__container--medium {
+    max-width: 60rem;
+  }
+
+  .rich-content__container--wide {
+    max-width: 75rem;
+  }
+
+  .rich-content__heading {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-block-end: 1.5rem;
+    color: var(--color-foreground-heading);
+  }
+
+  .rich-content__subheading {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-block-end: 1.5rem;
+    color: var(--color-foreground);
+  }
+
+  .rich-content__content {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-foreground);
+  }
+
+  .rich-content__content > *:first-child {
+    margin-top: 0;
+  }
+
+  .rich-content__content > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .rich-content__content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-block: 2rem 1rem;
+    color: var(--color-foreground-heading);
+  }
+
+  .rich-content__content h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-block: 1.5rem 0.75rem;
+    color: var(--color-foreground-heading);
+  }
+
+  .rich-content__content p {
+    margin-block: 1rem;
+  }
+
+  .rich-content__content ul,
+  .rich-content__content ol {
+    padding-left: 1.5rem;
+    margin-block: 1rem;
+  }
+
+  .rich-content__content li {
+    margin-block: 0.5rem;
+  }
+
+  .rich-content__content strong {
+    font-weight: 600;
+    color: var(--color-foreground-heading);
+  }
+
+  .rich-content__button {
+    margin-block-start: 2rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .rich-content__heading {
+      font-size: 1.75rem;
+    }
+
+    .rich-content__subheading {
+      font-size: 1.125rem;
+    }
+
+    .rich-content__content {
+      font-size: 0.9375rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Rich Content",
+  "tag": "section",
+  "class": "section-rich-content",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content width",
+      "options": [
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        }
+      ],
+      "default": "narrow"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        {
+          "value": "button",
+          "label": "Primary"
+        },
+        {
+          "value": "button-secondary",
+          "label": "Secondary"
+        }
+      ],
+      "default": "button"
+    },
+    {
+      "type": "header",
+      "content": "Section settings"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Page width"
+        },
+        {
+          "value": "full-width",
+          "label": "Full width"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich Content",
+      "settings": {
+        "heading": "Important Note",
+        "content": "<p>Add your content here</p>"
+      }
+    }
+  ]
+}
+{% endschema %}

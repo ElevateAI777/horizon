@@ -1,0 +1,287 @@
+{% liquid
+  assign show_header_row = section.settings.show_header_row
+%}
+
+<div class="comparison-table-wrapper section-wrapper">
+  <div class="comparison-table-section spacing-style section color-{{ section.settings.color_scheme }} {{ section.settings.section_width }}" style="{% render 'spacing-style', settings: section.settings %}">
+    {% if section.settings.heading != blank %}
+      <div class="comparison-table__header">
+        <h2 class="comparison-table__heading">{{ section.settings.heading }}</h2>
+        {% if section.settings.subheading != blank %}
+          <p class="comparison-table__subheading">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="comparison-table__container">
+      <table class="comparison-table">
+        {% if show_header_row %}
+          <thead>
+            <tr>
+              <th class="comparison-table__cell comparison-table__cell--header">{{ section.settings.col1_header }}</th>
+              <th class="comparison-table__cell comparison-table__cell--header comparison-table__cell--competitor">{{ section.settings.col2_header }}</th>
+              <th class="comparison-table__cell comparison-table__cell--header comparison-table__cell--product">{{ section.settings.col3_header }}</th>
+            </tr>
+          </thead>
+        {% endif %}
+        <tbody>
+          {% for block in section.blocks %}
+            <tr {{ block.shopify_attributes }}>
+              <td class="comparison-table__cell comparison-table__cell--feature">{{ block.settings.feature }}</td>
+              <td class="comparison-table__cell comparison-table__cell--competitor">{{ block.settings.competitor_value }}</td>
+              <td class="comparison-table__cell comparison-table__cell--product">{{ block.settings.product_value }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .comparison-table-section {
+    padding-block-start: var(--padding-block-start);
+    padding-block-end: var(--padding-block-end);
+  }
+
+  .comparison-table__header {
+    text-align: center;
+    margin-block-end: 3rem;
+  }
+
+  .comparison-table__heading {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-block-end: 1rem;
+    color: var(--color-foreground-heading);
+  }
+
+  .comparison-table__subheading {
+    font-size: 1.125rem;
+    color: var(--color-foreground);
+    max-width: 50rem;
+    margin-inline: auto;
+  }
+
+  .comparison-table__container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: var(--color-background);
+  }
+
+  .comparison-table__cell {
+    padding: 1.25rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgb(var(--color-border-rgb));
+    vertical-align: middle;
+  }
+
+  .comparison-table__cell--header {
+    font-weight: 600;
+    font-size: 1.125rem;
+    background: rgb(var(--color-border-rgb) / 0.05);
+    border-bottom: 2px solid rgb(var(--color-border-rgb));
+  }
+
+  .comparison-table__cell--feature {
+    font-weight: 500;
+    width: 35%;
+  }
+
+  .comparison-table__cell--competitor {
+    width: 32.5%;
+    background: rgb(var(--color-border-rgb) / 0.02);
+  }
+
+  .comparison-table__cell--product {
+    width: 32.5%;
+    background: rgba(var(--color-primary-button-background-rgb, 0, 128, 0), 0.05);
+    font-weight: 500;
+  }
+
+  @media screen and (max-width: 749px) {
+    .comparison-table__cell {
+      padding: 1rem 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .comparison-table__cell--header {
+      font-size: 1rem;
+    }
+
+    .comparison-table__cell--feature {
+      width: 40%;
+    }
+
+    .comparison-table__cell--competitor,
+    .comparison-table__cell--product {
+      width: 30%;
+    }
+  }
+
+  tbody tr:last-child .comparison-table__cell {
+    border-bottom: none;
+  }
+
+  .comparison-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Comparison Table",
+  "tag": "section",
+  "class": "section-comparison-table",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Compare Products"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header_row",
+      "label": "Show header row",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "col1_header",
+      "label": "Column 1 Header",
+      "default": "Характеристика"
+    },
+    {
+      "type": "text",
+      "id": "col2_header",
+      "label": "Column 2 Header",
+      "default": "Competitor"
+    },
+    {
+      "type": "text",
+      "id": "col3_header",
+      "label": "Column 3 Header",
+      "default": "Our Product"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Page width"
+        },
+        {
+          "value": "full-width",
+          "label": "Full width"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Table Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature",
+          "label": "Feature",
+          "default": "Feature name"
+        },
+        {
+          "type": "text",
+          "id": "competitor_value",
+          "label": "Competitor Value",
+          "default": "Value"
+        },
+        {
+          "type": "text",
+          "id": "product_value",
+          "label": "Product Value",
+          "default": "Value"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison Table",
+      "settings": {
+        "heading": "Защо да изберете Purvacor Slim?",
+        "col1_header": "Характеристика",
+        "col2_header": "GLP-1 Инжекции",
+        "col3_header": "Purvacor Slim"
+      },
+      "blocks": [
+        {
+          "type": "row",
+          "settings": {
+            "feature": "Начин на приложение",
+            "competitor_value": "Инжекции (седмично/дневно)",
+            "product_value": "Перорални капсули"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "feature": "Странични ефекти",
+            "competitor_value": "Гадене, повръщане, стомашни проблеми",
+            "product_value": "Отлична поносимост"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "feature": "Хормонална намеса",
+            "competitor_value": "Да - външни хормони",
+            "product_value": "Не - естествена подкрепа"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
